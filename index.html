@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aeroponic-Hydroponic Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: green;
+            color: white;
+        }
+        .container {
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            color: #eaeaea;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .button {
+            padding: 10px 15px;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        #updateButton {
+            background-color: red;
+        }
+        .graph-box {
+            background-color: rgb(171, 239, 202);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px green;
+            margin-bottom: 20px;
+        }
+        .info-box {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Aeroponic-Hydroponic Dashboard</h1>
+        </div>
+
+        <!-- Buttons -->
+        <div class="buttons">
+            <button class="button" onclick="displayInfo('Ammonia Level: ' + ammoniaLevel + ' ppm')">Ammonia Level</button>
+            <button class="button" onclick="displayInfo('Number of Plants: ' + numberOfPlants)">Number of Plants</button>
+            <button class="button" onclick="displayInfo('Water Quality: ' + waterQuality)">Water Quality</button>
+            <button class="button" onclick="displayInfo('pH Level: ' + pHLevel)">pH Level</button>
+            <button class="button" id="updateButton" onclick="updateDashboard()">Update</button>
+        </div>
+
+        <!-- Display Info -->
+        <div class="info-box" id="infoBox">
+            Click a button to see the value.
+        </div>
+
+        <!-- First Graph -->
+        <div class="graph-box">
+            <canvas id="firstGraph"></canvas>
+        </div>
+
+        <!-- Second Graph -->
+        <div class="graph-box">
+            <canvas id="secondGraph"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Initial Values
+        let ammoniaLevel = 5; // ppm
+        let numberOfPlants = 20;
+        let waterQuality = 'Good';
+        let pHLevel = 7.0;
+
+        // Initialize First Graph
+        const ctx1 = document.getElementById('firstGraph').getContext('2d');
+        const firstGraph = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['6 AM', '9 AM', '12 PM', '3 PM', '6 PM', '9 PM'],
+                datasets: [{
+                    label: 'Aeroscopic System',
+                    data: [6.5, 6.8, 7.0, 7.2, 7.1, 6.9],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true },
+                },
+                scales: {
+                    x: { grid: { color: '#444' } },
+                    y: { grid: { color: '#444' } }
+                }
+            }
+        });
+
+        // Initialize Second Graph
+        const ctx2 = document.getElementById('secondGraph').getContext('2d');
+        const secondGraph = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['6 AM', '9 AM', '12 PM', '3 PM', '6 PM', '9 PM'],
+                datasets: [{
+                    label: 'Hydroscopic System',
+                    data: [1625, 1700, 1650, 1680, 1675, 1620],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true },
+                },
+                scales: {
+                    x: { grid: { color: '#444' } },
+                    y: { grid: { color: '#444' } }
+                }
+            }
+        });
+
+        // Display Info
+        function displayInfo(message) {
+            document.getElementById('infoBox').innerText = message;
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            // Randomly generate new values
+            ammoniaLevel = Math.random() * (10 - 3) + 3; // Random value between 3 and 10
+            numberOfPlants = Math.floor(Math.random() * (30 - 15) + 15); // Random value between 15 and 30
+            waterQuality = ['Excellent', 'Good', 'Poor'][Math.floor(Math.random() * 3)];
+            pHLevel = (Math.random() * (8.0 - 6.5) + 6.5).toFixed(1); // Random pH between 6.5 and 8.0
+
+            // Update First Graph Data
+            firstGraph.data.datasets[0].data = Array(6).fill().map(() => (Math.random() * (8.0 - 6.5) + 6.5).toFixed(1));
+            firstGraph.update();
+
+            // Update Second Graph Data
+            secondGraph.data.datasets[0].data = Array(6).fill().map(() => Math.random() * (1800 - 1500) + 1500);
+            secondGraph.update();
+
+            // Update Info Box
+            const infoBox = document.getElementById('infoBox');
+            infoBox.innerText = 'Update Successful';
+        }
+    </script>
+</body>
+</html>
